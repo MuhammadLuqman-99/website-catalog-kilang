@@ -50,7 +50,7 @@ const OptimizedImage = ({ src, alt, width = 600, height = 600, className = '' })
           src={getOptimizedSrc(src)}
           alt={alt}
           fill
-          className={`object-cover transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+          className={`object-contain transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           onLoad={handleLoad}
           onError={handleError}

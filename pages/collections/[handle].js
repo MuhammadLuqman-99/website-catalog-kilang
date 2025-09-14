@@ -148,35 +148,40 @@ export default function Collection({ collections }) {
             <div className="relative">
               {/* Mobile dropdown menu */}
               <div className="md:hidden">
-                <select
-                  className="w-full py-3 px-4 text-sm font-medium border-none bg-white focus:outline-none appearance-none"
-                  value={`/collections/${handle}${agent ? `?agent=${agent}` : ''}`}
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      window.location.href = e.target.value;
-                    }
-                  }}
-                >
-                  <option value="">📂 Browse Collections</option>
-                  <option value={`/${agent ? `?agent=${agent}` : ''}`}>📦 All Products</option>
-                  {collections
-                    .filter(col =>
-                      col.title.toLowerCase().includes('batik') &&
-                      !col.title.toLowerCase().includes('sedondon')
-                    )
-                    .map(col => (
-                    <option
-                      key={col.id}
-                      value={`/collections/${col.handle}${agent ? `?agent=${agent}` : ''}`}
-                    >
-                      👘 {col.title}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                <div className="relative">
+                  <div className="w-full py-3 px-4 text-sm font-medium bg-white border border-gray-200 rounded-lg">
+                    <span className="text-gray-700">👘 {collection?.title || 'Current Collection'}</span>
+                  </div>
+                  <select
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    value=""
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        window.location.href = e.target.value;
+                      }
+                    }}
+                  >
+                    <option value="">👘 {collection?.title || 'Current Collection'}</option>
+                    <option value={`/${agent ? `?agent=${agent}` : ''}`}>📦 All Products</option>
+                    {collections
+                      .filter(col =>
+                        col.title.toLowerCase().includes('batik') &&
+                        !col.title.toLowerCase().includes('sedondon')
+                      )
+                      .map(col => (
+                      <option
+                        key={col.id}
+                        value={`/collections/${col.handle}${agent ? `?agent=${agent}` : ''}`}
+                      >
+                        👘 {col.title}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
@@ -331,36 +336,14 @@ export default function Collection({ collections }) {
   );
 }
 
-export async function getStaticPaths() {
-  try {
-    const collections = await getAllCollections();
-
-    const paths = collections.map((collection) => ({
-      params: { handle: collection.handle }
-    }));
-
-    return {
-      paths,
-      fallback: 'blocking'
-    };
-  } catch (error) {
-    console.error('Error in getStaticPaths:', error);
-    return {
-      paths: [],
-      fallback: 'blocking'
-    };
-  }
-}
-
-export async function getStaticProps() {
+export async function getServerSideProps() {
   try {
     const collections = await getAllCollections();
 
     return {
       props: {
         collections
-      },
-      revalidate: 3600 // Revalidate every hour
+      }
     };
   } catch (error) {
     console.error('Error fetching collections:', error);
@@ -368,8 +351,7 @@ export async function getStaticProps() {
     return {
       props: {
         collections: []
-      },
-      revalidate: 300 // Retry after 5 minutes on error
+      }
     };
   }
 }
