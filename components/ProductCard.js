@@ -24,7 +24,7 @@ const ProductCard = ({ product, agentNumber }) => {
 
   const handleOrderClick = () => {
     if (agentNumber) {
-      const whatsappLink = generateWhatsAppLink(agentNumber, product.title, price);
+      const whatsappLink = generateWhatsAppLink(agentNumber, product.title, price, imageUrl);
       window.open(whatsappLink, '_blank');
     } else {
       alert('No agent contact available. Please refresh the page with an agent parameter.');
