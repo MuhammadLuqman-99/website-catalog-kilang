@@ -110,7 +110,8 @@ export default function Home({ initialProducts, productTypes, collections, hasNe
                   <option value={`/${agent ? `?agent=${agent}` : ''}`}>📦 All Products</option>
                   {collections
                     .filter(collection =>
-                      collection.title.toLowerCase().includes('batik') &&
+                      (collection.title.toLowerCase().includes('batik') ||
+                       collection.title.toLowerCase().includes('jawa')) &&
                       !collection.title.toLowerCase().includes('sedondon')
                     )
                     .map(collection => (
@@ -161,7 +162,8 @@ export default function Home({ initialProducts, productTypes, collections, hasNe
                       </Link>
                       {collections
                         .filter(collection =>
-                          collection.title.toLowerCase().includes('batik') &&
+                          (collection.title.toLowerCase().includes('batik') ||
+                           collection.title.toLowerCase().includes('jawa')) &&
                           !collection.title.toLowerCase().includes('sedondon')
                         )
                         .map(collection => (
@@ -246,7 +248,7 @@ export default function Home({ initialProducts, productTypes, collections, hasNe
                 <p className="text-gray-600">Try adjusting your search or filter criteria</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-6 gap-6">
                 {filteredProducts.map(product => (
                   <ProductCard
                     key={product.id}
