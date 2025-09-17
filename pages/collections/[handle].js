@@ -152,15 +152,6 @@ export default function Collection({ collections }) {
                 <h1 className="text-lg font-bold text-gray-900">Kilang Desa Murni Batik</h1>
                 <p className="text-gray-600 text-sm">Traditional Malaysian Batik from Terengganu</p>
               </div>
-              {agentNumber && (
-                <div className="mt-2 sm:mt-0">
-                  <div className="bg-green-100 px-2 py-1 rounded-md">
-                    <p className="text-xs text-green-800">
-                      Agent: <span className="font-medium">{agentNumber}</span>
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </header>

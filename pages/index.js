@@ -106,15 +106,6 @@ export default function Home({ initialProducts, productTypes, collections, hasNe
                 <h1 className="text-lg font-bold text-gray-900">Kilang Desa Murni Batik</h1>
                 <p className="text-gray-600 text-sm">Traditional Malaysian Batik from Terengganu</p>
               </div>
-              {agentNumber && (
-                <div className="mt-2 sm:mt-0">
-                  <div className="bg-green-100 px-2 py-1 rounded-md">
-                    <p className="text-xs text-green-800">
-                      Agent: <span className="font-medium">{agentNumber}</span>
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </header>
@@ -249,7 +240,7 @@ export default function Home({ initialProducts, productTypes, collections, hasNe
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
-              <div className="sm:w-64">
+              <div className="sm:w-64 hidden sm:block">
                 <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
                   Filter by Category
                 </label>
