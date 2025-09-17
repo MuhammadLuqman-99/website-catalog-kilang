@@ -276,9 +276,33 @@ export default function Collection({ collections }) {
         {/* Collection Header */}
         <div className="w-full px-2 sm:px-4 py-3">
           <div className="text-center mb-4">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">{collection.title}</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">{collection.title}</h2>
+
+            {/* Collection Description Card */}
             {collection.description && (
-              <p className="text-sm text-gray-600 max-w-2xl mx-auto">{collection.description}</p>
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-3 max-w-3xl mx-auto">
+                <div className="text-blue-700 font-medium text-xs mb-1">📋 About this collection:</div>
+                <div
+                  className="text-gray-700 text-xs leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: collection.description
+                      .replace(/\n/g, '<br>')
+                      .replace(/✨|🌸|🎨|💧|✂️|📏|🎁|💡/g, '') // Remove emojis
+                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Convert **text** to bold
+                      .replace(/RM\d+/g, '<strong style="color: #059669;">$&</strong>') // Highlight prices
+                      .replace(/HARGA PROMOSI:/g, '<br><strong style="color: #dc2626;">HARGA PROMOSI:</strong>')
+                      .replace(/Material:/g, '<br><strong>Material:</strong>')
+                      .replace(/PILIHAN:/g, '<br><strong>PILIHAN:</strong>')
+                      .replace(/Kenapa Pilih/g, '<br><strong>Kenapa Pilih')
+                      // Remove WhatsApp related content
+                      .replace(/Tempah Sekarang atau Tanyakan Soalan:.*$/g, '')
+                      .replace(/Klik WhatsApp.*$/g, '')
+                      .replace(/👉.*wasap\.my.*$/g, '')
+                      .replace(/https:\/\/.*wasap\.my.*$/g, '')
+                      .replace(/Tempah Sekarang.*$/g, '')
+                  }}
+                />
+              </div>
             )}
           </div>
 

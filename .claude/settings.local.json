@@ -7,7 +7,11 @@
       "Bash(git add:*)",
       "Bash(git push:*)",
       "Bash(pkill:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(tasklist)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(npx kill-port:*)"
     ],
     "deny": [],
     "ask": []
