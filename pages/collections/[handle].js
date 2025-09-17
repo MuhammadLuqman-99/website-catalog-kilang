@@ -31,7 +31,14 @@ export default function Collection({ collections }) {
 
         if (data.success) {
           setCollection(data.collection);
-          setProducts(data.products);
+          const sortedProducts = data.products.sort((a, b) => {
+            const aInStock = a.availableForSale && a.variants?.edges?.[0]?.node?.quantityAvailable > 0;
+            const bInStock = b.availableForSale && b.variants?.edges?.[0]?.node?.quantityAvailable > 0;
+            if (aInStock && !bInStock) return -1;
+            if (!aInStock && bInStock) return 1;
+            return 0;
+          });
+          setProducts(sortedProducts);
           setHasMore(data.hasNextPage);
           setCursor(data.endCursor);
         } else {
@@ -62,6 +69,15 @@ export default function Collection({ collections }) {
       );
     }
 
+    // Sort by stock status - in stock first, sold out last
+    filtered = filtered.sort((a, b) => {
+      const aInStock = a.availableForSale && a.variants?.edges?.[0]?.node?.quantityAvailable > 0;
+      const bInStock = b.availableForSale && b.variants?.edges?.[0]?.node?.quantityAvailable > 0;
+      if (aInStock && !bInStock) return -1;
+      if (!aInStock && bInStock) return 1;
+      return 0;
+    });
+
     setFilteredProducts(filtered);
   };
 
@@ -74,7 +90,14 @@ export default function Collection({ collections }) {
       const result = await data.json();
 
       if (result.success) {
-        setProducts(prev => [...prev, ...result.products]);
+        const sortedNewProducts = result.products.sort((a, b) => {
+          const aInStock = a.availableForSale && a.variants?.edges?.[0]?.node?.quantityAvailable > 0;
+          const bInStock = b.availableForSale && b.variants?.edges?.[0]?.node?.quantityAvailable > 0;
+          if (aInStock && !bInStock) return -1;
+          if (!aInStock && bInStock) return 1;
+          return 0;
+        });
+        setProducts(prev => [...prev, ...sortedNewProducts]);
         setHasMore(result.hasNextPage);
         setCursor(result.endCursor);
       }
@@ -123,16 +146,16 @@ export default function Collection({ collections }) {
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-white shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="w-full px-2 sm:px-4 py-3">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Kilang Desa Murni Batik</h1>
-                <p className="text-gray-600 mt-1">Traditional Malaysian Batik from Terengganu</p>
+                <h1 className="text-lg font-bold text-gray-900">Kilang Desa Murni Batik</h1>
+                <p className="text-gray-600 text-sm">Traditional Malaysian Batik from Terengganu</p>
               </div>
               {agentNumber && (
-                <div className="mt-4 sm:mt-0">
-                  <div className="bg-green-100 px-3 py-2 rounded-lg">
-                    <p className="text-sm text-green-800">
+                <div className="mt-2 sm:mt-0">
+                  <div className="bg-green-100 px-2 py-1 rounded-md">
+                    <p className="text-xs text-green-800">
                       Agent: <span className="font-medium">{agentNumber}</span>
                     </p>
                   </div>
@@ -144,12 +167,12 @@ export default function Collection({ collections }) {
 
         {/* Navigation */}
         <nav className="bg-white border-b sticky top-0 z-50 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full px-2 sm:px-4">
             <div className="relative">
               {/* Mobile dropdown menu */}
               <div className="md:hidden">
                 <div className="relative">
-                  <div className="w-full py-3 px-4 text-sm font-medium bg-white border border-gray-200 rounded-lg">
+                  <div className="w-full py-2 px-3 text-sm font-medium bg-white border border-gray-200 rounded-lg">
                     <span className="text-gray-700">👘 {collection?.title || 'Current Collection'}</span>
                   </div>
                   <select
@@ -164,11 +187,28 @@ export default function Collection({ collections }) {
                     <option value="">👘 {collection?.title || 'Current Collection'}</option>
                     <option value={`/${agent ? `?agent=${agent}` : ''}`}>📦 All Products</option>
                     {collections
-                      .filter(col =>
-                        (col.title.toLowerCase().includes('batik') ||
-                         col.title.toLowerCase().includes('jawa')) &&
-                        !col.title.toLowerCase().includes('sedondon')
-                      )
+                      .filter(col => {
+                        const title = col.title.toLowerCase();
+                        return !title.includes('sedondon') &&
+                               !title.includes('kain ela') &&
+                               !title.includes('best selling') &&
+                               !title.includes('newest') &&
+                               !title.includes('sampin') &&
+                               !title.includes('luxe airis') &&
+                               !title.includes('baju melayu') &&
+                               !title.includes('crepe') &&
+                               !title.includes('frabric') &&
+                               !title.includes('men') &&
+                               !title.includes('women') &&
+                               !title.includes('damia cotton 1.0') &&
+                               !title.includes('crepe bot') &&
+                               !title.includes('kids') &&
+                               !title.includes('fabric') &&
+                               !title.includes('damia2.0') &&
+                               !title.includes('damia 2.0') &&
+                               !title.includes('sutera collection') &&
+                               !title.includes('cotton bot');
+                      })
                       .map(col => (
                       <option
                         key={col.id}
@@ -186,71 +226,56 @@ export default function Collection({ collections }) {
                 </div>
               </div>
 
-              {/* Desktop horizontal scroll with navigation arrows */}
+              {/* Desktop dropdown */}
               <div className="hidden md:block">
-                <div className="relative flex items-center">
-                  {/* Left scroll button */}
-                  <button
-                    onClick={() => {
-                      const scrollContainer = document.getElementById('collection-nav-scroll-container');
-                      scrollContainer.scrollBy({ left: -200, behavior: 'smooth' });
+                <div className="py-2">
+                  <select
+                    className="w-full py-2 px-3 text-sm font-medium border-none bg-white focus:outline-none appearance-none"
+                    value={`/collections/${handle}${agent ? `?agent=${agent}` : ''}`}
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        window.location.href = e.target.value;
+                      }
                     }}
-                    className="absolute left-0 z-10 p-2 bg-white shadow-md rounded-full border hover:bg-gray-50 transition-colors"
-                    style={{ transform: 'translateX(-50%)' }}
                   >
-                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-
-                  {/* Scrollable container */}
-                  <div
-                    id="collection-nav-scroll-container"
-                    className="flex items-center space-x-2 py-4 overflow-x-auto scrollbar-hidden mx-8"
-                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                  >
-                    <div className="flex space-x-2 min-w-max px-4">
-                      <Link
-                        href={`/${agent ? `?agent=${agent}` : ''}`}
-                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-primary-100 hover:text-primary-700 rounded-full transition-colors whitespace-nowrap shadow-sm"
+                    <option value={`/${agent ? `?agent=${agent}` : ''}`}>📦 All Products</option>
+                    {collections
+                      .filter(col => {
+                        const title = col.title.toLowerCase();
+                        return !title.includes('sedondon') &&
+                               !title.includes('kain ela') &&
+                               !title.includes('best selling') &&
+                               !title.includes('newest') &&
+                               !title.includes('sampin') &&
+                               !title.includes('luxe airis') &&
+                               !title.includes('baju melayu') &&
+                               !title.includes('crepe') &&
+                               !title.includes('frabric') &&
+                               !title.includes('men') &&
+                               !title.includes('women') &&
+                               !title.includes('damia cotton 1.0') &&
+                               !title.includes('crepe bot') &&
+                               !title.includes('kids') &&
+                               !title.includes('fabric') &&
+                               !title.includes('damia2.0') &&
+                               !title.includes('damia 2.0') &&
+                               !title.includes('sutera collection') &&
+                               !title.includes('cotton bot');
+                      })
+                      .map(col => (
+                      <option
+                        key={col.id}
+                        value={`/collections/${col.handle}${agent ? `?agent=${agent}` : ''}`}
                       >
-                        📦 All Products
-                      </Link>
-                      {collections
-                        .filter(col =>
-                          (col.title.toLowerCase().includes('batik') ||
-                           col.title.toLowerCase().includes('jawa')) &&
-                          !col.title.toLowerCase().includes('sedondon')
-                        )
-                        .map(col => (
-                        <Link
-                          key={col.id}
-                          href={`/collections/${col.handle}${agent ? `?agent=${agent}` : ''}`}
-                          className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap shadow-sm ${
-                            col.handle === handle
-                              ? 'text-white bg-primary-600 hover:bg-primary-700'
-                              : 'text-gray-700 bg-gray-100 hover:bg-primary-100 hover:text-primary-700'
-                          }`}
-                        >
-                          👘 {col.title}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Right scroll button */}
-                  <button
-                    onClick={() => {
-                      const scrollContainer = document.getElementById('collection-nav-scroll-container');
-                      scrollContainer.scrollBy({ left: 200, behavior: 'smooth' });
-                    }}
-                    className="absolute right-0 z-10 p-2 bg-white shadow-md rounded-full border hover:bg-gray-50 transition-colors"
-                    style={{ transform: 'translateX(50%)' }}
-                  >
+                        👘 {col.title}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
                     <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -258,16 +283,16 @@ export default function Collection({ collections }) {
         </nav>
 
         {/* Collection Header */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{collection.title}</h2>
+        <div className="w-full px-2 sm:px-4 py-3">
+          <div className="text-center mb-4">
+            <h2 className="text-xl font-bold text-gray-900 mb-2">{collection.title}</h2>
             {collection.description && (
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">{collection.description}</p>
+              <p className="text-sm text-gray-600 max-w-2xl mx-auto">{collection.description}</p>
             )}
           </div>
 
           {/* Search */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
             <div className="max-w-md mx-auto">
               <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
                 Search in {collection.title}
@@ -297,7 +322,7 @@ export default function Collection({ collections }) {
                 <p className="text-gray-600">Try adjusting your search criteria</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-6 gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-6 gap-2 sm:gap-3">
                 {filteredProducts.map(product => (
                   <ProductCard
                     key={product.id}
@@ -325,8 +350,8 @@ export default function Collection({ collections }) {
         </div>
 
         {/* Footer */}
-        <footer className="bg-white border-t mt-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <footer className="bg-white border-t mt-6">
+          <div className="w-full px-2 sm:px-4 py-4">
             <div className="text-center text-gray-600">
               <p>&copy; 2024 Kilang Desa Murni Batik. All rights reserved.</p>
               <p className="mt-2 text-sm">Contact our agent to place your order!</p>

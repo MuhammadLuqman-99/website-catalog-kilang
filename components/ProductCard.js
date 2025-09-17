@@ -1,5 +1,6 @@
 import OptimizedImage from './OptimizedImage';
 import { formatPrice, getProductImageUrl, generateWhatsAppLink } from '../lib/shopify';
+import { trackLead } from '../lib/fbpixel';
 
 const ProductCard = ({ product, agentNumber }) => {
   const variant = product.variants.edges[0]?.node;
@@ -8,15 +9,15 @@ const ProductCard = ({ product, agentNumber }) => {
   const isOnSale = compareAtPrice && parseFloat(variant.compareAtPrice.amount) > parseFloat(variant.price.amount);
 
   const stockStatus = () => {
-    if (!product.availableForSale) return { text: 'Out of stock', color: 'text-red-600', available: false };
-    if (variant?.quantityAvailable === 0) return { text: 'Out of stock', color: 'text-red-600', available: false };
+    if (!product.availableForSale) return { text: '0', color: 'text-red-600', available: false };
+    if (variant?.quantityAvailable === 0) return { text: '0', color: 'text-red-600', available: false };
     if (variant?.quantityAvailable) {
       if (variant.quantityAvailable <= 5) {
-        return { text: `Only ${variant.quantityAvailable} left`, color: 'text-orange-600', available: true };
+        return { text: `${variant.quantityAvailable}`, color: 'text-orange-600', available: true };
       }
-      return { text: `${variant.quantityAvailable} in stock`, color: 'text-green-600', available: true };
+      return { text: `${variant.quantityAvailable}`, color: 'text-green-600', available: true };
     }
-    return { text: 'In stock', color: 'text-green-600', available: true };
+    return { text: '✓', color: 'text-green-600', available: true };
   };
 
   const stock = stockStatus();
@@ -24,6 +25,14 @@ const ProductCard = ({ product, agentNumber }) => {
 
   const handleOrderClick = () => {
     if (agentNumber) {
+      // Track Facebook Pixel Lead event
+      trackLead(
+        product.title,
+        product.id,
+        parseFloat(variant?.price?.amount || 0),
+        variant?.price?.currencyCode || 'MYR'
+      );
+
       const whatsappLink = generateWhatsAppLink(agentNumber, product.title, price, imageUrl);
       window.open(whatsappLink, '_blank');
     } else {
@@ -32,12 +41,12 @@ const ProductCard = ({ product, agentNumber }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
-      <div className="relative h-64 bg-gray-200">
+    <div className="bg-white rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden group">
+      <div className="relative aspect-square bg-gray-200">
         <OptimizedImage
           src={imageUrl}
           alt={product.images?.edges?.[0]?.node?.altText || product.title}
-          className="h-64"
+          className="w-full h-full object-cover"
         />
         {isOnSale && (
           <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-medium">
@@ -51,39 +60,29 @@ const ProductCard = ({ product, agentNumber }) => {
         )}
       </div>
 
-      <div className="p-4">
-        <h3 className="font-medium text-gray-900 mb-2 line-clamp-2" title={product.title}>
+      <div className="p-2">
+        <h3 className="font-medium text-gray-900 mb-1 text-sm line-clamp-2" title={product.title}>
           {product.title}
         </h3>
 
         {product.productType && (
-          <p className="text-sm text-gray-500 mb-2">{product.productType}</p>
+          <p className="text-xs text-gray-500 mb-1">{product.productType}</p>
         )}
 
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-lg font-bold text-gray-900">{price}</span>
+        <div className="flex items-center gap-1 mb-1">
+          <span className="text-sm font-bold text-gray-900">{price}</span>
           {isOnSale && (
-            <span className="text-sm text-gray-500 line-through">{compareAtPrice}</span>
+            <span className="text-xs text-gray-500 line-through">{compareAtPrice}</span>
           )}
         </div>
 
-        <div className="flex items-center justify-between mb-3">
-          <span className={`text-sm font-medium ${stock.color}`}>
+        <div className="flex items-center justify-between mb-2">
+          <div></div>
+          <span className={`text-lg font-bold ${stock.color}`}>
             {stock.text}
           </span>
         </div>
 
-        <button
-          onClick={handleOrderClick}
-          disabled={!stock.available}
-          className={`w-full py-2 px-4 rounded-lg font-medium transition-colors duration-200 ${
-            stock.available
-              ? 'bg-green-600 hover:bg-green-700 text-white'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
-        >
-          {stock.available ? 'Order via Agent' : 'Out of Stock'}
-        </button>
       </div>
     </div>
   );
