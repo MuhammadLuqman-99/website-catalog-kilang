@@ -223,39 +223,21 @@ export default function Home({ initialProducts, productTypes, collections, hasNe
           </div>
         </nav>
 
-        {/* Search and Filter */}
+        {/* Search */}
         <div className="w-full px-2 sm:px-4 py-3">
           <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1">
-                <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
-                  Search Products
-                </label>
-                <input
-                  type="text"
-                  id="search"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search by name or description..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-              <div className="sm:w-64 hidden sm:block">
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-                  Filter by Category
-                </label>
-                <select
-                  id="category"
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="">All Categories</option>
-                  {productTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-              </div>
+            <div className="max-w-md mx-auto">
+              <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+                Search Products
+              </label>
+              <input
+                type="text"
+                id="search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search by name or description..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
             </div>
           </div>
 
