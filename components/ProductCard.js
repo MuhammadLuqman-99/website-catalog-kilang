@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import OptimizedImage from './OptimizedImage';
+import DraggableImage from './DraggableImage';
 import { formatPrice, getProductImageUrl, generateWhatsAppLink } from '../lib/shopify';
 import { trackLead } from '../lib/fbpixel';
 
@@ -46,47 +46,48 @@ const ProductCard = ({ product, agentNumber }) => {
     <>
       <div className="bg-white rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden group cursor-pointer" onClick={() => setShowModal(true)}>
         <div className="relative aspect-square bg-gray-200">
-          <OptimizedImage
+          <DraggableImage
             src={imageUrl}
             alt={product.images?.edges?.[0]?.node?.altText || product.title}
             className="w-full h-full object-cover"
+            productTitle={product.title}
           />
+
           {isOnSale && (
-            <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-medium">
+            <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-medium z-10">
               Sale
             </div>
           )}
           {!stock.available && (
-            <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+            <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-20">
               <span className="text-white font-medium text-lg">Out of Stock</span>
             </div>
           )}
         </div>
 
-      <div className="p-2">
-        <h3 className="font-medium text-gray-900 mb-1 text-sm line-clamp-2" title={product.title}>
-          {product.title}
-        </h3>
+        <div className="p-2">
+          <h3 className="font-medium text-gray-900 mb-1 text-sm line-clamp-2" title={product.title}>
+            {product.title}
+          </h3>
 
-        {product.productType && (
-          <p className="text-xs text-gray-500 mb-1">{product.productType}</p>
-        )}
-
-        <div className="flex items-center gap-1 mb-1">
-          <span className="text-sm font-bold text-gray-900">{price}</span>
-          {isOnSale && (
-            <span className="text-xs text-gray-500 line-through">{compareAtPrice}</span>
+          {product.productType && (
+            <p className="text-xs text-gray-500 mb-1">{product.productType}</p>
           )}
-        </div>
 
-        <div className="flex items-center justify-between mb-2">
-          <div></div>
-          <span className={`text-lg font-bold ${stock.color}`}>
-            {stock.text}
-          </span>
-        </div>
+          <div className="flex items-center gap-1 mb-1">
+            <span className="text-sm font-bold text-gray-900">{price}</span>
+            {isOnSale && (
+              <span className="text-xs text-gray-500 line-through">{compareAtPrice}</span>
+            )}
+          </div>
 
-      </div>
+          <div className="flex items-center justify-between mb-2">
+            <div></div>
+            <span className={`text-lg font-bold ${stock.color}`}>
+              {stock.text}
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Modal for full-size image */}
@@ -101,12 +102,14 @@ const ProductCard = ({ product, agentNumber }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <img
+
+            <DraggableImage
               src={imageUrl.replace('_medium', '_grande')}
               alt={product.images?.edges?.[0]?.node?.altText || product.title}
               className="max-w-full max-h-full object-contain rounded-lg"
-              onClick={(e) => e.stopPropagation()}
+              productTitle={product.title}
             />
+
             <div className="absolute bottom-4 left-4 right-4 bg-black bg-opacity-50 text-white p-4 rounded-lg">
               <h3 className="font-medium text-lg">{product.title}</h3>
               <p className="text-yellow-300 font-bold text-xl">{price}</p>

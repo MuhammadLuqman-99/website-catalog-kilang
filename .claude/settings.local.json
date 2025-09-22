@@ -1,4 +1,5 @@
 {
+  "model": "claude-opus-4.1-20250514",
   "permissions": {
     "allow": [
       "Bash(npm install)",
@@ -11,7 +12,12 @@
       "Bash(tasklist)",
       "Bash(findstr:*)",
       "Bash(taskkill:*)",
-      "Bash(npx kill-port:*)"
+      "Bash(npx kill-port:*)",
+      "Bash(npm install:*)",
+      "Bash(netstat:*)",
+      "Bash(start http://localhost:3000)",
+      "Read(//c/Users/PC CUSTOM/Downloads/**)",
+      "Bash(start http://localhost:3001)"
     ],
     "deny": [],
     "ask": []
