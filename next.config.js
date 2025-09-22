@@ -11,6 +11,14 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    // Reduce build tracing recursion
+    outputFileTracingIncludes: {
+      '/api/**': [],
+    },
+  },
+  // Exclude problematic patterns from build tracing
+  outputFileTracing: true,
 }
 
 module.exports = nextConfig

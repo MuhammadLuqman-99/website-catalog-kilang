@@ -1,0 +1,9 @@
+# Vercel ignore patterns to prevent build issues
+node_modules
+.next
+.git
+*.log
+.claude
+.env.local
+coverage
+.DS_Store
