@@ -11,14 +11,10 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    // Reduce build tracing recursion
-    outputFileTracingIncludes: {
-      '/api/**': [],
-    },
+  // Updated for Next.js 15
+  outputFileTracingIncludes: {
+    '/api/**': [],
   },
-  // Exclude problematic patterns from build tracing
-  outputFileTracing: true,
 }
 
 module.exports = nextConfig
