@@ -5,29 +5,9 @@ import { getProductImageUrl } from '../lib/shopify';
 const DraggableImage = ({ src, alt, className, productTitle, product, size = 'medium' }) => {
   const [isDragging, setIsDragging] = useState(false);
 
-  // Convert WebP to JPG by modifying the URL
-  const getConvertedImageUrl = (imageUrl, targetSize = 'medium') => {
-    if (!imageUrl) return imageUrl;
-
-    // Convert WebP to JPG format in the URL
-    if (imageUrl.includes('cdn.shopify.com')) {
-      imageUrl = imageUrl.split('?')[0];
-      const sizeMap = {
-        small: '300x300',
-        medium: '600x600',
-        large: '1200x1200',
-        grande: '1024x1024'
-      };
-      const targetSizeValue = sizeMap[targetSize] || sizeMap.medium;
-      imageUrl = `${imageUrl}?width=${targetSizeValue.split('x')[0]}&height=${targetSizeValue.split('x')[1]}&format=jpg&quality=95`;
-    }
-
-    return imageUrl;
-  };
-
-  // Get the appropriate image URL
+  // Get the appropriate image URL - let shopify.js handle all processing
   const imageUrl = product ? getProductImageUrl(product, size) : src;
-  const largeImageUrl = getConvertedImageUrl(imageUrl, 'grande');
+  const largeImageUrl = product ? getProductImageUrl(product, 'large') : src;
 
   // Handle drag start
   const handleDragStart = (e) => {
