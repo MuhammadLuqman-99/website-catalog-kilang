@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -55,11 +55,7 @@ export default function Collection({ collections }) {
     fetchCollection();
   }, [handle]);
 
-  useEffect(() => {
-    filterProducts();
-  }, [searchTerm, products]);
-
-  const filterProducts = () => {
+  const filterProducts = useCallback(() => {
     let filtered = products;
 
     if (searchTerm) {
@@ -79,7 +75,11 @@ export default function Collection({ collections }) {
     });
 
     setFilteredProducts(filtered);
-  };
+  }, [products, searchTerm]);
+
+  useEffect(() => {
+    filterProducts();
+  }, [filterProducts]);
 
   const loadMoreProducts = async () => {
     if (!hasMore || isLoadingMore) return;

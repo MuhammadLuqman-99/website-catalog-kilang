@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -17,11 +17,7 @@ export default function Home({ initialProducts, productTypes, collections, hasNe
   const [hasMore, setHasMore] = useState(hasNextPage);
   const [cursor, setCursor] = useState(endCursor);
 
-  useEffect(() => {
-    filterProducts();
-  }, [searchTerm, selectedType, products]);
-
-  const filterProducts = async () => {
+  const filterProducts = useCallback(async () => {
     if (searchTerm || selectedType) {
       // If searching or filtering, fetch from API
       setIsLoading(true);
@@ -57,7 +53,11 @@ export default function Home({ initialProducts, productTypes, collections, hasNe
       });
       setFilteredProducts(sortedProducts);
     }
-  };
+  }, [searchTerm, selectedType, products]);
+
+  useEffect(() => {
+    filterProducts();
+  }, [filterProducts]);
 
   const loadMoreProducts = async () => {
     if (!hasMore || isLoading) return;

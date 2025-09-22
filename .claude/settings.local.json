@@ -17,7 +17,8 @@
       "Bash(start http://localhost:3000)",
       "Read(//c/Users/PC CUSTOM/Downloads/**)",
       "Bash(start http://localhost:3001)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm run lint)"
     ],
     "deny": [],
     "ask": []
