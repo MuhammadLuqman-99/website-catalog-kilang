@@ -47,7 +47,8 @@ const ProductCard = ({ product, agentNumber }) => {
       <div className="bg-white rounded-md shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden group cursor-pointer" onClick={() => setShowModal(true)}>
         <div className="relative aspect-square bg-gray-200">
           <DraggableImage
-            src={imageUrl}
+            product={product}
+            size="medium"
             alt={product.images?.edges?.[0]?.node?.altText || product.title}
             className="w-full h-full object-cover"
             productTitle={product.title}
@@ -104,7 +105,8 @@ const ProductCard = ({ product, agentNumber }) => {
             </button>
 
             <DraggableImage
-              src={imageUrl.replace('_medium', '_grande')}
+              product={product}
+              size="grande"
               alt={product.images?.edges?.[0]?.node?.altText || product.title}
               className="max-w-full max-h-full object-contain rounded-lg"
               productTitle={product.title}
