@@ -94,7 +94,7 @@ export default function Home({ initialProducts, productTypes, collections, hasNe
         <title>Product Catalog - Kilang Desa Murni Batik</title>
         <meta name="description" content="Browse our beautiful collection of traditional Malaysian batik from Terengganu" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </Head>
 
       <div className="min-h-screen bg-gray-50">

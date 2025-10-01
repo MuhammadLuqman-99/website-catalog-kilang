@@ -140,7 +140,7 @@ export default function Collection({ collections }) {
         <title>{collection.title} - Kilang Desa Murni Batik</title>
         <meta name="description" content={collection.description || `Browse ${collection.title} collection`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </Head>
 
       <div className="min-h-screen bg-gray-50">

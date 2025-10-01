@@ -15,19 +15,6 @@ const OptimizedImage = ({ src, alt, width = 600, height = 600, className = '' })
     setError(true);
   };
 
-  // Fallback to original URL if it's a Shopify image with issues
-  const getOptimizedSrc = (originalSrc) => {
-    if (!originalSrc) return '/placeholder-product.svg';
-
-    // For Shopify images, try to use the original URL first
-    if (originalSrc.includes('cdn.shopify.com')) {
-      // Remove size parameters and use original
-      return originalSrc.split('?')[0];
-    }
-
-    return originalSrc;
-  };
-
   return (
     <div className={`relative bg-gray-200 ${className}`}>
       {isLoading && (
@@ -47,7 +34,7 @@ const OptimizedImage = ({ src, alt, width = 600, height = 600, className = '' })
         </div>
       ) : (
         <Image
-          src={getOptimizedSrc(src)}
+          src={src || '/placeholder-product.svg'}
           alt={alt}
           fill
           className={`object-contain transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
