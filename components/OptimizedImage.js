@@ -55,6 +55,7 @@ const OptimizedImage = ({ src, alt, width = 600, height = 600, className = '' })
           onLoad={handleLoad}
           onError={handleError}
           priority={false}
+          unoptimized
         />
       )}
     </div>
